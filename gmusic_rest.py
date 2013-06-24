@@ -29,10 +29,14 @@ loggedIn = False
 ###############################################################################
 def loadGoogleData():
     mpc.log('Google login successful')
-    songDict = api.get_all_songs()
-    mpc.log('Loaded ' + str(len(songDict)) + ' songs')
+    songDict = api.get_all_songs(False)
+    mpc.log('API Songs batch loaded, parsing...')
+    # mpc.log('Loaded ' + str(len(songDict)) + ' songs')
     
+    i = 0
     for song in songDict:
+        if i > 100:
+			break
         album = str(unicode(song['album']).encode('utf-8'))
         albumArtUrl = str(unicode(song.get('albumArtUrl','')).encode('utf-8'))
         artist = str(unicode(song.get('artist','')).encode('utf-8'))
@@ -64,7 +68,16 @@ def loadGoogleData():
         artistTracksList.sort(key=operator.itemgetter('name'))
         artistDict.update({'tracks':artistTracksList})
         artistDict.update({'totalTracks':len(artistTracksList)})
+        
+        try:
+		    albums = artistDict['albums']
+        except KeyError:
+            artistDict['albums'] = dict()
+            albums = artistDict['albums']
+        albums[album] = albumDict
+		
         artistStore.update({artist:artistDict})
+        
    
     convertDictToSortedList(albumStore, albumList)
     convertDictToSortedList(artistStore, artistList)
@@ -164,6 +177,17 @@ def getArtists():
 # Artist
 ###############################################################################
 @route('/google/artist/<artist>')
+def getArtist(artist):
+    artistDict = artistStore[artist]
+    #player.setPlaylist(artistStore.get(artist).get('tracks'))
+    artistDict.update({'artist':artist})
+    result = dict()
+    l = []
+    convertDictToSortedList(artistDict['albums'], l)
+    result.update({'items': l})
+    return result
+
+@route('/google/artist/<artist>/all')
 def getArtist(artist):
     artistDict = artistStore[artist]
     player.setPlaylist(artistStore.get(artist).get('tracks'))

@@ -94,7 +94,7 @@ def moveStation(posFrom, posTo):
 ###############################################################################
 @route('/radio/volume/<volume>')
 def editVolume(volume):
-	mpc.sysCmd('mpc volume ' + volume)
+	mpc.sysCmd('amixer set PCM playback ' + str(int(volume)) + '\% ')
 	return volume
 	
 # Volume Get

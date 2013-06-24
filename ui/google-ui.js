@@ -93,10 +93,11 @@ function playAlbum(album) {
 function loadArtists() {
 	initLoad(listId, 'Lade Interpreten');
 	$.getJSON('/google/artists/list', function(data) {
+        console.log(data);
 		var items = [];
 		var albums = data.items;
 		$.each(albums, function(key, value) {
-			var html='<li><a href="google_player.html" data-prefetch onClick="playArtist(\'' + value.artist + '\')"><h2>' + value.artist + '</h2><span class="ui-li-count ui-btn-up-c ui-btn-corner-all" id="track-count-label">';
+			var html='<li><a href="google.html" data-prefetch onClick="playArtist(\'' + value.artist + '\')"><h2>' + value.artist + '</h2><span class="ui-li-count ui-btn-up-c ui-btn-corner-all" id="track-count-label">';
 			html+= value.totalTracks;
 			html+= '</span></a></li>';
 			items.push(html);
@@ -106,19 +107,26 @@ function loadArtists() {
 }
 
 function playArtist(artist) {
-	initLoad(playListId, 'Lade Titel');
+	initLoad(listId, 'Lade Titel');
 	$.getJSON('/google/artist/' + artist, function(data) {
+        console.log(data)
 		var items = [];
-		var tracks = data.tracks;
-		var trackCount = data.totalTracks;
-		applyPlayerInfo(data.albumArtUrl, data.artist, trackCount + ' Titel', data.year);
-		$.each(tracks, function(key, value) {
-			var html='<li><a id="' + value.id + '" href="#" onClick="playSong(\'' + value.id + '\')"><h2>' + value.name + '</h2><span class="ui-li-count ui-btn-up-c ui-btn-corner-all" id="track-count-label">';
-			html+= value.duration;
-			html+= '</span></a></li>';
-			items.push(html);			
+		var albums = data.items;
+		$.each(albums, function(key, value) {
+			if(value.album && value.album.length > 0){
+				var url = value.albumArtUrl;
+				if(!url || url.length === 0) {
+					url = 'img/info.png';
+				}
+				var html='<li><a href="google_player.html" onClick="playAlbum(\''+ value.album + '\')"><img src="' + url + '" style="height:80px;border-right:1px solid #aaa;"><h2>' + value.album + '</h2><p>'+ value.artist +'</p>';
+				if(value.totalTracks !== '0') {
+					html+= '<span class="ui-li-count ui-btn-up-c ui-btn-corner-all" id="track-count-label">' + value.totalTracks + '</span>';	
+				}			
+				html+= '</a></li>';
+				items.push(html);
+			}
 		});
-		finalizeLoading(playListId, playerPageId, items);		
+		finalizeLoading(listId, dataPageId, items);
 	});
 }
 
@@ -182,7 +190,7 @@ function stopPlayer() {
 /*******************************************/
 function initLoad(lId, title) {
 	//remove all existing station and reload the stations in this callback
-	$.mobile.loading( 'show', {
+	$.mobile.loading('show', {
 		text: title,
 		textVisible: true,
 		theme: 'a',

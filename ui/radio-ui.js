@@ -197,16 +197,20 @@ function moveStation(fromPos, toPos) {
 }
 
 function applyVolumeSliderListener() {
-	$('.ui-slider').live('mouseup', function() {
+	$('#volume-slider').change( function() {
 		$.mobile.loading('show');
-		var slider_value = $("#volume-slider").val();
+		var slider_value = Math.abs($("#volume-slider").val());
 		$.getJSON('/radio/volume/' + slider_value, function(data) {
 			$.mobile.loading('hide');
 		});    
 	});
 	
 	$.getJSON('/radio/volume', function(data) {
-		$('#volume-slider').attr('value', data);
+		$('#volume-slider').attr('value', Math.abs(data));
+		var min = Math.abs($('#volume-slider').attr('min'))
+		var percentage = (Math.abs(data)-min)/(($('#volume-slider').attr('max'))-min)*100 + "%";
+		$('.ui-btn-active').css('width', percentage);
+		$('.ui-slider-handle').css('left', percentage);
 	}); 
 }
 

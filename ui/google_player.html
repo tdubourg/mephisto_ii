@@ -44,13 +44,21 @@
                 <span><a href="#" onClick="stopPlayer()"><img id="stop-button-icon" src="img/stop.png" alt="Stop" /></a></span>
                 <span><a href="#" onClick="startPlayer()"><img id="play-button-icon" src="img/play.png" alt="Abspielen" /></a></span>
                 <span><a href="#" onClick="playerAction('next')"><img src="img/prev.png" alt="Weiter" /></a></span>    
+                <input type="range" name="slider-fill" id="volume-slider" value="85" min="50" max="100" data-highlight="true" />
+                <script>
+                applyVolumeSliderListener();
+                </script>
             </div>
         </div>
 	</div>
     <!-- *************************** /Player *************************** -->
     
     
-    
+      <script>
+$(document).ready(function () {
+	applyVolumeSliderListener();
+});
+</script>
 
 </body>
 </html>

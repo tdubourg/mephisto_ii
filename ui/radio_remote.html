@@ -28,13 +28,19 @@
 				<a href="#" onClick="remoteControl('prev')" data-role="button" data-icon="back" data-iconpos="left" data-inline="true">&nbsp;</a>
 				<a href="#" id="play-button" onClick="remoteControl('play')" data-role="button" data-icon="arrow-r" data-iconpos="left" data-inline="true">Start</a>
 				<a href="#" onClick="remoteControl('next')" data-role="button" data-icon="forward" data-iconpos="right" data-inline="true">&nbsp;</a>
-				<!--input type="range" name="volume-slider" data-highlight="true" id="volume-slider" value="0" min="0" max="100" /-->
+				
+				<input type="range" name="slider-fill" id="volume-slider" value="85" min="50" max="100" data-highlight="true" />
+				
 			</div>
 			
 		</div>
 
 	</div>
 <!-- ***************************** /Remote Control ****************************************************************************-->
-    
+    <script>
+	$(document).ready(function () {
+	applyVolumeSliderListener();
+});
+</script>
 </body>
 </html>

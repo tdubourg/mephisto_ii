@@ -23,7 +23,7 @@ class PlayerUpdate(threading.Thread):
                 if next is None:
                     self.__running = False
                 else:
-                    url = Player.api.get_stream_url(next)
+                    url = Player.api.get_stream_urls(next)[0]
                     mpc.telnetCmd('clear')
                     mpc.telnetCmd('add ' + str(url))
                     mpc.telnetCmd('play')    
@@ -112,7 +112,7 @@ class Player(object):
         else:
             Player.current = songId;
             
-        url = Player.api.get_stream_url(Player.current)
+        url = Player.api.get_stream_urls(Player.current)[0]
         mpc.telnetCmd('clear')
         mpc.telnetCmd('add ' + str(url))
         mpc.telnetCmd('play')
